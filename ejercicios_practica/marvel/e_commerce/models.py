@@ -1,9 +1,8 @@
 from django.db import models
 
-# NOTE: Para poder utilizar el modelo "user" que viene por defecto en Django,
+# NOTA: Para poder utilizar el modelo "user" que viene por defecto en Django,
 # Debemos importarlo previamente:
 from django.contrib.auth.models import User
-
 
 # Create your models here.
 class Comic(models.Model):
@@ -40,4 +39,24 @@ class Comic(models.Model):
         El método __str__ cumple una función parecida a __repr__ en SQL Alchemy, 
         es lo que retorna cuando llamamos al objeto.
         '''
-        return f'{self.id}'
+        return f'{self.id} - {self.title}'
+    
+class WishList(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    
+    user = models.ForeignKey(User, null=False, blank=False, on_delete=models.CASCADE)
+
+    comic = models.ForeignKey(Comic, verbose_name='Comic', on_delete=models.CASCADE, default=1, blank=True)
+
+    favorite = models.BooleanField(verbose_name='Favorite', default='')
+    cart = models.BooleanField(verbose_name='Carrito', default='')
+    wished_qty = models.PositiveIntegerField(verbose_name='wished qty', default=0)
+    bought_qty = models.PositiveIntegerField(verbose_name='bought qty', default=0)
+
+    class Meta:        
+        db_table = 'e_commerce_wishes'
+        verbose_name = 'wish'
+        verbose_name_plural = 'wishes'
+
+    def __str__(self):        
+        return f'{self.user} - {self.comic}'
